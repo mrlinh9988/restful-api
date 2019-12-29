@@ -2,10 +2,17 @@ const express = require('express');
 const server = express();
 const port = 3000;
 const db = require('./connect-db');
+const path = require('path');
 
-server.use(express.urlencoded({ extended: true }));
+server.use(express.urlencoded({ extended: true }))
 
-server.get('/user/', (req, res, next) => {
+server.use('/public', express.static(path.join(__dirname, '/public')));
+
+server.get('/', (req, res, next) => {
+    res.sendFile(path.join(__dirname, '/public/index.html'))
+})
+
+server.get('/user', (req, res, next) => {
     db.getAll().then(data => {
         res.json(data)
     }).catch(err => console.log(err))
@@ -24,6 +31,24 @@ server.get('/paginate/user/:numberPage', (req, res, next) => {
     let numberItems = 3;
     db.paginate(numberPage * numberItems, numberItems).then(data => {
         res.json(data)
+    }).catch(err => console.log(err))
+})
+
+server.post('/login', (req, res, next) => {
+    let username = req.body.username;
+    let password = req.body.password;
+    db.checkLogin(username, password).then(data => {
+        if (data.length === 0) {
+            console.log('fail');
+            return res.json({
+                message: 'Login fail'
+            });
+           
+        }
+        console.log('success');
+        res.json({
+            message: 'Login success'
+        })
     }).catch(err => console.log(err))
 })
 

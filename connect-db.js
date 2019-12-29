@@ -77,11 +77,23 @@ function deleteData(id) {
     });
 }
 
+function checkLogin(username, password) {
+    return User.findAll({
+        where: {
+            username: username,
+            password: password
+        }
+    }, {
+        raw: true
+    });
+}
+
 module.exports = {
     getAll,
     getById,
     createData,
     updateData,
     deleteData,
-    paginate
+    paginate,
+    checkLogin: checkLogin
 }
