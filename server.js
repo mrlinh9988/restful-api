@@ -12,6 +12,7 @@ server.get('/', (req, res, next) => {
     res.sendFile(path.join(__dirname, '/public/index.html'))
 })
 
+
 server.get('/user', (req, res, next) => {
     db.getAll().then(data => {
         res.json(data)
@@ -26,7 +27,7 @@ server.get('/user/:id', (req, res, next) => {
 })
 
 // pagination
-server.get('/paginate/user/:numberPage', (req, res, next) => {
+server.get('/user/page/:numberPage', (req, res, next) => {
     let numberPage = parseInt(req.params.numberPage) - 1;
     let numberItems = 3;
     db.paginate(numberPage * numberItems, numberItems).then(data => {
@@ -51,6 +52,7 @@ server.post('/login', (req, res, next) => {
         })
     }).catch(err => console.log(err))
 })
+
 
 server.post('/user', (req, res, next) => {
     db.createData(req.body.username, req.body.password).then(data => {
